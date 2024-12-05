@@ -6,29 +6,25 @@ import glob
 import tarfile
 
 def fetch_data(data_path, url):
-  if len(os.listdir(data_path)) == 0:
     print(f'Fetching data from {url}')
     req = requests.get(url)
     if req.ok:
       zip = zipfile.ZipFile(io.BytesIO(req.content))
       zip.extractall(data_path)
-  else:
-    print('Skipped fetching data')
 
-def extract_tgz_file(data_path, png_path):
-  destination_path = data_path + png_path
-  if len(os.listdir(destination_path)) == 0:
+def extract_tgz_file(data_path):
     print('Extracting .tgz file')
     tgz_file_path = glob.glob(data_path + '/**/*.tgz')[0]
     file = tarfile.open(tgz_file_path)
+    destination_path = data_path + '/' + os.listdir(data_path)[0] + 'words'
     file.extractall(destination_path, filter='data')
-  else:
-    print('Skipping .tgz extraction')
 
 data_path = './data'
 url = 'https://git.io/J0fjL'
-png_path = '/word_pngs'
-os.mkdir(data_path + png_path)
+os.makedirs(data_path, exist_ok=True)
 
-fetch_data(data_path, url)
-extract_tgz_file(data_path, png_path)
+if len(os.listdir(data_path)) == 0:
+  fetch_data(data_path, url)
+  extract_tgz_file(data_path)
+else:
+  print("Skipping extract handwriting data, likely complete")
