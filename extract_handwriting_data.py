@@ -16,15 +16,16 @@ def extract_tgz_file(data_path):
     print('Extracting .tgz file')
     tgz_file_path = glob.glob(data_path + '/**/*.tgz')[0]
     file = tarfile.open(tgz_file_path)
-    destination_path = data_path + '/' + os.listdir(data_path)[0] + 'words'
+    destination_path = data_path + '/' + os.listdir(data_path)[0] + '/words'
     file.extractall(destination_path, filter='data')
 
 data_path = './data'
 url = 'https://git.io/J0fjL'
 os.makedirs(data_path, exist_ok=True)
 
-if len(os.listdir(data_path)) == 0:
-  fetch_data(data_path, url)
-  extract_tgz_file(data_path)
-else:
-  print("Skipping extract handwriting data, likely complete")
+if __name__ == "__main__":
+  if len(os.listdir(data_path)) == 0:
+    fetch_data(data_path, url)
+    extract_tgz_file(data_path)
+  else:
+    print("Skipping extract handwriting data, likely complete")
